@@ -1,7 +1,21 @@
 scriptName ConsoleCommands extends Quest
 
+; LET'S MAKE AN MCM!
+
+bool enterKeyOn = true
+
 event OnInit()
-    Debug.MessageBox("Hello from Custom Console Commands")
-    bool isCustomConsole = UI.GetBool("Console", "_global.Console.SUPPORTS_CUSTOM_COMMANDS")
-    Debug.MessageBox("Do we have the custom modified console available? " + isCustomConsole)
+    RegisterForUpdate(5)
+endEvent
+
+event OnUpdate()
+    if enterKeyOn
+        enterKeyOn = false
+        UI.SetBool("Console", "_global.Console.HandleEnterKey", false)
+        Debug.Notification("Disabled enter key")
+    else
+        enterKeyOn = true
+        UI.SetBool("Console", "_global.Console.HandleEnterKey", true)
+        Debug.Notification("Enabled enter key")
+    endIf
 endEvent

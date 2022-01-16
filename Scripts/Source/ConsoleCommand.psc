@@ -1,0 +1,2 @@
+scriptName ConsoleCommand extends Quest
+

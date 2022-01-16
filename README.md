@@ -1,2 +1,1 @@
-# ConsoleCommands
- ~ Custom Skyrim Console Commands ~
+# ~ Custom Skyrim Console Commands ~
