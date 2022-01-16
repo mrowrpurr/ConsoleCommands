@@ -25,3 +25,7 @@ endEvent
 event OnCommandInit()
     ; Intended for console commands to override
 endEvent
+
+event OnRun(string[] arguments)
+    ; Inteded for console commands to override
+endEvent

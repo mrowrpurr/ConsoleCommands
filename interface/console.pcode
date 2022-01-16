@@ -5,7 +5,7 @@ Push "Console"
 GetMember
 Not
 Not
-If loc1894
+If loc18f8
 Push "Console"
 DefineFunction2 "" 0 4 false false true true true false false true true  {
 Push 0 register2 undefined
@@ -1073,21 +1073,21 @@ SetMember
 SetMember
 Push register2 "onKeyDown"
 DefineFunction2 "" 0 4 false false true false true false false true false  {
-Push "Console"
+Push 0 "Key" "Console"
 GetVariable
 Push "HandleEnterKey"
 GetMember
-If loc1495
+If loc14a2
 Push undefined
 Return
-loc1495:Push 0 "Key"
+loc14a2:Push 0 "Key"
 GetVariable
 Push "getCode"
 CallMethod
 Push 13
 Equals2
 PushDuplicate
-If loc14d6
+If loc14e3
 Pop
 Push 0 "Key"
 GetVariable
@@ -1095,8 +1095,8 @@ Push "getCode"
 CallMethod
 Push 108
 Equals2
-loc14d6:Not
-If loc15f2
+loc14e3:Not
+If loc15ff
 Push register1 "CommandEntry"
 GetMember
 Push "text"
@@ -1107,7 +1107,7 @@ Push 0
 Equals2
 Not
 Not
-If loc15ed
+If loc15fa
 Push register1 "Commands"
 GetMember
 Push "length"
@@ -1119,13 +1119,13 @@ GetMember
 Less2
 Not
 Not
-If loc1542
+If loc154f
 Push 0 register1 "Commands"
 GetMember
 Push "shift"
 CallMethod
 Pop
-loc1542:Push register1 "CommandEntry"
+loc154f:Push register1 "CommandEntry"
 GetMember
 Push "text"
 GetMember
@@ -1163,15 +1163,15 @@ Pop
 Push 0 register1 "ResetCommandEntry"
 CallMethod
 Pop
-loc15ed:Jump loc1746
-loc15f2:Push 0 "Key"
+loc15fa:Jump loc1753
+loc15ff:Push 0 "Key"
 GetVariable
 Push "getCode"
 CallMethod
 Push 33
 Equals2
 Not
-If loc1696
+If loc16a3
 Push register1 "CommandHistory"
 GetMember
 Push "bottomScroll"
@@ -1197,20 +1197,20 @@ Push "scroll" register3 0
 Greater
 Not
 Not
-If loc168b
+If loc1698
 Push 0
-Jump loc1690
-loc168b:Push register3
-loc1690:SetMember
-Jump loc1746
-loc1696:Push 0 "Key"
+Jump loc169d
+loc1698:Push register3
+loc169d:SetMember
+Jump loc1753
+loc16a3:Push 0 "Key"
 GetVariable
 Push "getCode"
 CallMethod
 Push 34
 Equals2
 Not
-If loc1746
+If loc1753
 Push register1 "CommandHistory"
 GetMember
 Push "bottomScroll"
@@ -1238,16 +1238,16 @@ Push "maxscroll"
 GetMember
 Greater
 Not
-If loc1740
+If loc174d
 Push register1 "CommandHistory"
 GetMember
 Push "maxscroll"
 GetMember
-Jump loc1745
-loc1740:Push register3
-loc1745:SetMember
+Jump loc1752
+loc174d:Push register3
+loc1752:SetMember
 }
-loc1746:SetMember
+loc1753:SetMember
 Push register2 "onResize"
 DefineFunction2 "" 0 3 false false true false true false false true false  {
 Push register1 "Background"
@@ -1288,6 +1288,21 @@ CallMethod
 Pop
 }
 SetMember
+Push register1 "ExecuteCommand"
+DefineFunction2 "" 1 2 false false true false true false true false false 1 "commandText"  {
+Push register1 1
+InitArray
+Push "ExecuteCommand" 2 "gfx"
+GetVariable
+Push "io"
+GetMember
+Push "GameDelegate"
+GetMember
+Push "call"
+CallMethod
+Pop
+}
+SetMember
 Push register1 "HandleEnterKey" true
 SetMember
 Push register1 "SUPPORTS_CUSTOM_COMMANDS" true
@@ -1307,4 +1322,4 @@ Push "prototype"
 GetMember
 Push 3 "ASSetPropFlags"
 CallFunction
-loc1894:Pop
+loc18f8:Pop

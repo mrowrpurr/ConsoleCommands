@@ -61,13 +61,86 @@ event OnInit()
     _commands7 = new ConsoleCommand[128]
     _commands8 = new ConsoleCommand[128]
     _commands9 = new ConsoleCommand[128]
-
-    RegisterForSingleUpdate(5)
+    ListenForConsoleCommands()
 endEvent
 
-event OnUpdate()
-    Debug.MessageBox("Command names: " + _commandNames0)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Command Execution
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+function ListenForConsoleCommands()
+    RegisterForMenu("Console")
+    EnableCustomConsoleCommands()
+endFunction
+
+function StopListeningForConsoleCommands()
+    UnregisterForMenu("Console")
+    DisableCustomConsoleCommands()
+endFunction
+
+event OnMenuOpen(string menuName)
+    RegisterForKey(28)  ; Enter
+    RegisterForKey(156) ; Return
 endEvent
+
+event OnMenuClose(string menuName)
+    UnregisterForKey(28)  ; Enter
+    UnregisterForKey(156) ; Return
+endEvent
+
+event OnKeyDown(int keyCode)
+    RunConsoleCommandFromUI()
+endEvent
+
+function RunConsoleCommandFromUI()
+    string commandText = GetCurrentConsoleText()
+    if commandText
+        string[] parts = StringUtil.Split(commandText, " ")
+        string commandName = parts[0]
+        int commandIndex = GetConsoleCommandIndex(commandName)
+        ConsoleCommand cmd
+        if commandIndex > -1
+            cmd = GetConsoleCommand(commandIndex)
+        endIf
+        if cmd
+            ClearCommandEntryAndAddToHistory(commandText)
+            string[] arguments = Utility.CreateStringArray(parts.Length - 1)
+            int i = 0
+            while i < arguments.Length
+                arguments[i] = parts[i + 1]
+                i += 1
+            endWhile
+            cmd.OnRun(arguments)
+        else
+            ExecuteNativeCommand(commandText)
+        endIf
+    endIf
+endFunction
+
+int function GetConsoleCommandIndex(string name)
+    int index = _commandNames0.Find(name)
+    if index > -1
+        return index
+    endIf
+
+    ; TODO - be sure to add the 128*number to the returned "index"
+    ; ...
+
+    return -1
+endFunction
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Console UI
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+string function GetCurrentConsoleText()
+    return UI.GetString("Console", "_global.Console.ConsoleInstance.CommandEntry.text")
+endFunction
+
+function ClearCommandEntryAndAddToHistory(string commandText)
+    UI.InvokeString("Console", "_global.Console.AddHistory", commandText)
+    UI.Invoke("Console", "_global.Console.ConsoleInstance.ResetCommandEntry")
+endFunction
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Command Registry Management
@@ -84,8 +157,6 @@ function RegisterConsoleCommand(string name, ConsoleCommand cmd)
 
     int index = _commandCount
 
-    Debug.MessageBox("Index: " + index)
-
     if index < 128 ; 0
         _commandNames0[index] = name
         _commands0[index] = cmd
@@ -97,6 +168,14 @@ function RegisterConsoleCommand(string name, ConsoleCommand cmd)
     _commandCount += 1
 
     Unlock()
+endFunction
+
+ConsoleCommand function GetConsoleCommand(int index)
+    if index < 128
+        return _commands0[index]
+    else ; TODO
+        ; TODO
+    endIf
 endFunction
 
 function Lock(float lock = 0.0)
@@ -147,4 +226,12 @@ endFunction
 
 function Register(string name, ConsoleCommand cmd) global
     GetInstance().RegisterConsoleCommand(name, cmd)
+endFunction
+
+bool function Exists(string name) global
+    return GetInstance().GetConsoleCommandIndex(name) > -1
+endFunction
+
+function ExecuteNativeCommand(string commandText) global
+    UI.InvokeString("Console", "_global.Console.ExecuteCommand", commandText)
 endFunction
